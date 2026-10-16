@@ -1,0 +1,44 @@
+# Two themes; viewers switch between them from the ⋮ menu → Settings.
+
+[theme]
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+headingFont = "Sora:https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&display=swap"
+headingFontWeights = [800, 700, 700, 600, 600, 600]
+baseRadius = "0.75rem"
+buttonRadius = "full"
+showWidgetBorder = true
+chartCategoricalColors = ["#f97316", "#6366f1", "#10b981", "#eab308", "#ec4899", "#14b8a6"]
+
+[theme.dark]
+base = "dark"
+primaryColor = "#f97316"
+backgroundColor = "#0a0f1f"
+secondaryBackgroundColor = "#141a33"
+textColor = "#e7e9f5"
+borderColor = "#262d4f"
+dataframeHeaderBackgroundColor = "#141a33"
+
+[theme.dark.sidebar]
+backgroundColor = "#0e1430"
+secondaryBackgroundColor = "#1a2142"
+borderColor = "#262d4f"
+
+[theme.light]
+base = "light"
+primaryColor = "#111111"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f4f4f5"
+textColor = "#0a0a0a"
+borderColor = "#e4e4e7"
+dataframeHeaderBackgroundColor = "#fafafa"
+
+[theme.light.sidebar]
+backgroundColor = "#fafafa"
+secondaryBackgroundColor = "#f0f0f1"
+borderColor = "#e4e4e7"
+
+[server]
+maxUploadSize = 50
+
+[client]
+toolbarMode = "viewer"
