@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from .modeling import METRIC_LABELS, METRICS, MODEL_SPECS, ExperimentResult
+from modeling import METRIC_LABELS, METRICS, MODEL_SPECS, ExperimentResult
 
 # A train-vs-CV gap larger than this suggests the model is memorising the training folds.
 OVERFIT_GAP = 0.05

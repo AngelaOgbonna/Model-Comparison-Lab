@@ -8,8 +8,8 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 
-from ml_lab import plots
-from ml_lab.modeling import (
+import plots
+from modeling import (
     METRIC_LABELS,
     METRICS,
     MODEL_SPECS,
@@ -18,16 +18,16 @@ from ml_lab.modeling import (
     prepare_data,
     run_experiment,
 )
-from ml_lab.profiling import (
+from profiling import (
     candidate_targets,
     class_balance,
     imbalance_ratio,
     profile_dataframe,
     validate_target,
 )
-from ml_lab.recommend import recommend
+from recommend import recommend
 
-DATA_DIR = Path(__file__).parent / "data"
+DATA_DIR = Path(__file__).parent
 SAMPLES = {
     "Customer churn (binary, mixed types, missing values)": "customer_churn.csv",
     "Breast cancer diagnosis (binary, numeric)": "breast_cancer.csv",

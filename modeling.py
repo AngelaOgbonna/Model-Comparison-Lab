@@ -30,7 +30,7 @@ from sklearn.model_selection import ParameterGrid, RandomizedSearchCV, Stratifie
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelBinarizer, OneHotEncoder, StandardScaler
 
-from .profiling import infer_column_kind
+from profiling import infer_column_kind
 
 METRICS = ["accuracy", "precision", "recall", "f1", "roc_auc"]
 METRIC_LABELS = {

@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 
-from .modeling import METRIC_LABELS, METRICS, ExperimentResult
+from modeling import METRIC_LABELS, METRICS, ExperimentResult
 
 MODEL_COLORS = {
     "Logistic Regression": "#2a78d6",
