@@ -2,10 +2,17 @@
 
 from __future__ import annotations
 
-import html
-import io
-import re
-from pathlib import Path
+import os
+
+# One CPU thread for the numeric libraries: Streamlit Community Cloud throttles apps that keep several
+# cores busy. Must be set before numpy / scikit-learn are imported.
+for _var in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
+    os.environ.setdefault(_var, "1")
+
+import html  # noqa: E402
+import io  # noqa: E402
+import re  # noqa: E402
+from pathlib import Path  # noqa: E402
 
 import pandas as pd
 import streamlit as st
@@ -42,7 +49,7 @@ for _k in PERSISTENT_KEYS:  # re-assigning keeps widget state alive when its pag
     if _k in st.session_state:
         st.session_state[_k] = st.session_state[_k]
 # Defaults live in session state (not in the widgets), so they don't clash with the persistence above.
-for _k, _v in {"source": "Sample", "folds": 5, "test_size": 0.2, "budget": "Balanced", "models": list(MODEL_SPECS)}.items():
+for _k, _v in {"source": "Sample", "folds": 5, "test_size": 0.2, "budget": "Quick", "models": list(MODEL_SPECS)}.items():
     st.session_state.setdefault(_k, _v)
 
 
@@ -52,6 +59,25 @@ for _k, _v in {"source": "Sample", "folds": 5, "test_size": 0.2, "budget": "Bala
 @st.cache_data(show_spinner=False)
 def load_csv(raw: bytes) -> pd.DataFrame:
     return pd.read_csv(io.BytesIO(raw), sep=None, engine="python")
+
+
+@st.cache_resource
+def _experiment_store() -> dict:
+    """Results shared by every visitor, keyed by dataset + settings."""
+    return {}
+
+
+def cached_experiment(key: tuple, data, progress):
+    """Train once per dataset + settings; repeat runs (e.g. visitors trying the samples) reuse the result."""
+    store = _experiment_store()
+    if key not in store:
+        if len(store) >= 6:
+            store.pop(next(iter(store)))
+        store[key] = run_experiment(
+            data, list(key[5]), primary_metric=key[6], cv_folds=key[7], test_size=key[8],
+            search_budget=key[9], progress=progress,
+        )
+    return store[key]
 
 
 @st.cache_data(show_spinner=False)
@@ -283,15 +309,9 @@ def train_page() -> None:
             return
         bar = st.progress(0.0, text="Starting…")
         try:
-            exp = run_experiment(
-                data,
-                models,
-                primary_metric=metric,
-                cv_folds=folds,
-                test_size=test_size,
-                search_budget=budget,
-                progress=lambda frac, text: bar.progress(frac, text=text),
-            )
+            key = (st.session_state.dataset_name, len(df), target, tuple(exclude), positive, tuple(models),
+                   metric, folds, test_size, budget)
+            exp = cached_experiment(key, data, lambda frac, text: bar.progress(frac, text=text))
         except Exception as exc:  # noqa: BLE001
             bar.empty()
             st.exception(exc)

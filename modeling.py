@@ -40,11 +40,11 @@ METRIC_LABELS = {
     "f1": "F1",
     "roc_auc": "ROC-AUC",
 }
-# Parallel worker processes. Each one holds its own copy of the data, so this stays small to fit
-# within Streamlit Community Cloud's memory limit (about 1 GB).
-N_JOBS = 2
+# Parallel worker processes. Kept at 1: Streamlit Community Cloud throttles apps that use a lot of
+# CPU for long periods, and each extra worker also holds its own copy of the data in memory.
+N_JOBS = 1
 # Number of random hyperparameter combinations tried per model.
-SEARCH_BUDGETS = {"Quick": 4, "Balanced": 12, "Thorough": 30}
+SEARCH_BUDGETS = {"Quick": 3, "Balanced": 6, "Thorough": 15}
 
 
 # --------------------------------------------------------------------------- data preparation
@@ -174,7 +174,7 @@ MODEL_SPECS: dict[str, ModelSpec] = {
         name="Random Forest",
         factory=lambda seed: RandomForestClassifier(random_state=seed, n_jobs=1),
         param_grid={
-            "n_estimators": [150, 300],
+            "n_estimators": [100, 200],
             "max_depth": [None, 6, 12, 20],
             "min_samples_leaf": [1, 3, 5],
             "max_features": ["sqrt", 0.5],
@@ -188,7 +188,7 @@ MODEL_SPECS: dict[str, ModelSpec] = {
         factory=lambda seed: HistGradientBoostingClassifier(random_state=seed),
         param_grid={
             "learning_rate": [0.03, 0.1, 0.2],
-            "max_iter": [100, 300],
+            "max_iter": [100, 200],
             "max_leaf_nodes": [15, 31, 63],
             "min_samples_leaf": [10, 20, 40],
             "l2_regularization": [0.0, 1.0],
